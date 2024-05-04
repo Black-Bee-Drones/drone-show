@@ -13,7 +13,7 @@ class FrequencyController(Node):
     def __init__(self):
         super().__init__("frequecy_controller")
 
-        self.bebop = Bebop()
+        self.bebop = Bebop(self, driver=False)
         self.create_subscription(
             Int16, "/bebop/frequency_action", self._moviment_callback, 10
         )

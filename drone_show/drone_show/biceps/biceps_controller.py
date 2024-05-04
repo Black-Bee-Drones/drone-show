@@ -12,7 +12,7 @@ class BicepsController(Node):
     def __init__(self, modelComplexity=1, detectionCon=0.6, trackCon=0.5):
         super().__init__("biceps_controller")
 
-        self.bebop = Bebop(bebop_driver=False)
+        self.bebop = Bebop(self, driver=False)
         
         self.img_handler = ImageHandler(self, 
                             "webcam", 

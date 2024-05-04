@@ -10,7 +10,7 @@ class ArucoController(Node):
     def __init__(self):
         super().__init__("aruco_controller")
 
-        self.bebop = Bebop(bebop_driver=False)
+        self.bebop = Bebop(self, driver=False)
         self.aruco = Aruco(5, 20)
         self.img = ImageHandler(self, "webcam", self.run, "Aruco detection", 0)
 
