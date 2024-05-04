@@ -186,6 +186,9 @@ def main(args=None):
     node = GestureRecognizer()
     rclpy.spin(node)
 
+    node.destroy_node()
+    rclpy.shutdown()
+
 
 if __name__ == "__main__":
     main()

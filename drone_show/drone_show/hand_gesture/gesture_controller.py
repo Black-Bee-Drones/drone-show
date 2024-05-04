@@ -10,7 +10,7 @@ class GestureController(Node):
     def __init__(self) -> None:
         super().__init__("gesture_controller")
 
-        self.bebop = Bebop(bebop_driver=False)
+        self.bebop = Bebop(node=self, driver=False)
         self.create_subscription(
             Int16, "/bebop/hands_action", self._moviment_callback, 10
         )
