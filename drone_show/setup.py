@@ -30,6 +30,7 @@ setup(
             "frequency_controller = drone_show.note_frequency.frequency_controller:main",
             "note_recognizer = drone_show.note_frequency.note_recognizer:main",
             "aruco_controller = drone_show.aruco.aruco_controller:main",
+            "biceps_controller = drone_show.biceps.biceps_controller:main",
         ],
     },
 )

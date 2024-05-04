@@ -61,7 +61,6 @@ class ArucoController(Node):
                     self.currentID, ("Unknown", None)
                 )
                 if action_func and not self.already_sent:
-                    self.get_logger().info(f"Action: {action_name}")
                     action_func()
                     self.already_sent = True
 

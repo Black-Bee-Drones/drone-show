@@ -7,7 +7,6 @@ from mirela_sdk.image_processing.camera.image_handler import ImageHandler
 from mirela_sdk.control.bebop.bebop_api import Bebop
 
 
-
 class BicepsController(Node):
 
     def __init__(self, modelComplexity=1, detectionCon=0.6, trackCon=0.5):
