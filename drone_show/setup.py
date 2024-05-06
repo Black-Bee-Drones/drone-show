@@ -31,6 +31,7 @@ setup(
             "note_recognizer = drone_show.note_frequency.note_recognizer:main",
             "aruco_controller = drone_show.aruco.aruco_controller:main",
             "biceps_controller = drone_show.biceps.biceps_controller:main",
+            "line_detector = drone_show.follow_line.line_detection_node:main",
         ],
     },
 )
