@@ -1,4 +1,5 @@
 import rclpy
+import rclpy.context
 from rclpy.node import Node
 
 from std_msgs.msg import Int16
@@ -10,6 +11,7 @@ from mirela_sdk.image_processing.camera.image_handler import ImageHandler
 
 import time
 import math
+import sys
 
 
 class GestureRecognizer(Node):
@@ -184,11 +186,11 @@ class GestureRecognizer(Node):
 def main(args=None):
     rclpy.init(args=args)
     node = GestureRecognizer()
-    rclpy.spin(node)
 
-    node.destroy_node()
-    rclpy.shutdown()
-
+    try:
+        rclpy.spin(node)
+    except KeyboardInterrupt:
+        node.destroy_node()
 
 if __name__ == "__main__":
     main()
