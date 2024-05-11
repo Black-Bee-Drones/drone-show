@@ -13,7 +13,12 @@ import numpy as np
 
 from mirela_sdk.image_processing.camera.image_handler import ImageHandler
 from mirela_interfaces.msg import LineInfo
-from drone_show.follow_line.line_detector import LineDetector, RotatedRect
+from drone_show.follow_line.line_detector import (
+    LineDetector,
+    RotatedRect,
+    HoughLinesP,
+    FitEllipse,
+)
 
 
 class LineDetectionNode(Node):
@@ -23,12 +28,12 @@ class LineDetectionNode(Node):
 
     # Constants for image processing
     IMG_SIZE = (640, 480)
-    DETECTION_ZONE = (600, 130)
+    DETECTION_ZONE = (250, 150)
 
     def __init__(self, line_color: str = None, image_source: str = None):
         super().__init__("line_detection_node")
 
-        self.declare_parameter("line_color", "blue")
+        self.declare_parameter("line_color", "red")
         self.declare_parameter("image_source", "webcam")
 
         if line_color is None:
@@ -106,7 +111,6 @@ class LineDetectionNode(Node):
             if cv2.waitKey(1) & 0xFF == ord("q"):
                 self.get_logger().info("Shutting down line detection node")
                 self.cleanup()
-                sys.exit(0)
 
         except Exception as e:
             self.get_logger().error(f"Error in line detection: {e}")
@@ -125,12 +129,10 @@ def main(args=None):
     try:
         # Start the line detection
         rclpy.spin(detector)
-    except rclpy.exceptions.ROSInterruptException:
-        pass
-    finally:
+    except KeyboardInterrupt:
         # Clean up resources before shutdown
         detector.destroy_node()
-        rclpy.shutdown()
+        sys.exit(0)
 
 
 if __name__ == "__main__":
