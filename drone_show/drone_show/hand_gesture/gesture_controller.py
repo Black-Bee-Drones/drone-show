@@ -28,28 +28,28 @@ class GestureController(Node):
             5: ("Direita", lambda: self.bebop.offboard_velocity(0.0, 0.1, 0.0, 0.0)),
             11: (
                 "Anda pra trás",
-                lambda: self.bebop.offboard_velocity(-0.2, 0.0, 0.0, 0.0),
+                lambda: self.bebop.offboard_velocity(-0.15, 0.0, 0.0, 0.0),
             ),
             12: (
                 "Anda pra frente",
-                lambda: self.bebop.offboard_velocity(0.2, 0.0, 0.0, 0.0),
+                lambda: self.bebop.offboard_velocity(0.15, 0.0, 0.0, 0.0),
             ),
             13: (
                 "Yaw Horário",
-                lambda: self.bebop.offboard_velocity(0.0, 0.0, 0.0, 0.2),
+                lambda: self.bebop.offboard_velocity(0.0, 0.0, 0.0, 5.0),
             ),
             14: (
                 "Yaw Anti-Horário",
-                lambda: self.bebop.offboard_velocity(0.0, 0.0, 0.0, -0.2),
+                lambda: self.bebop.offboard_velocity(0.0, 0.0, 0.0, -5.0),
             ),
         }
 
         self.single_actions: dict[int, tuple[str, callable]] = {
             1: ("Land", lambda: self.bebop.land()),
-            6: ("Flip Direita", lambda: self.bebop.flip(2)),
-            7: ("Flip Esquerda", lambda: self.bebop.flip(3)),
-            8: ("Flip Frente", lambda: self.bebop.flip(0)),
-            9: ("Flip Tras", lambda: self.bebop.flip(1)),
+            # 6: ("Flip Direita", lambda: self.bebop.flip(2)),
+            # 7: ("Flip Esquerda", lambda: self.bebop.flip(3)),
+            # 8: ("Flip Frente", lambda: self.bebop.flip(0)),
+            # 9: ("Flip Tras", lambda: self.bebop.flip(1)),
             10: ("Tirando Foto", lambda: self.bebop.snapshot()),
             15: ("Tchau", lambda: self.bebop.bye_bye()),
         }

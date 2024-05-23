@@ -12,7 +12,7 @@ class ArucoController(Node):
 
         self.bebop = Bebop(self, driver=False)
         self.aruco = Aruco(5, 20)
-        self.img = ImageHandler(self, "webcam", self.run, "Aruco detection", 0)
+        self.img = ImageHandler(self, "/bebop/camera/image_raw", self.run, "Aruco detection")
 
         self.currentID = None
         self.previousID = None
@@ -20,14 +20,21 @@ class ArucoController(Node):
         self.t_start = None
 
         self.continuous_actions: dict[int, tuple[str, callable]] = {
-            0: ("Trás", lambda: self.bebop.offboard_velocity(-0.1, 0.0, 0.0, 0.0)),
-            200: ("Frente", lambda: self.bebop.offboard_velocity(0.1, 0.0, 0.0, 0.0)),
+            0: ("Frente", lambda: self.bebop.offboard_velocity(0.3, 0.0, 0.0, 0.0)),
+            600: ("Trás", lambda: self.bebop.offboard_velocity(-0.3, 0.0, 0.0, 0.0)),
+            200: ("Direita", lambda: self.bebop.offboard_velocity(0.0, 0.3, 0.0, 0.0)),
+            900: ("Esquerda", lambda: self.bebop.offboard_velocity(0.0, -0.3, 0.0, 0.0)),
+            800: ("Sobe", lambda: self.bebop.offboard_velocity(0.0, 0.0, 0.3, 0.0)),
+            700: ("Desce", lambda: self.bebop.offboard_velocity(0.0, 0.0, -0.3, 0.0)),
+            
+
+            
         }
 
         self.single_actions: dict[int, tuple[str, callable]] = {
-            600: ("Flip frente", lambda: self.bebop.flip(0)),
-            700: ("Flip direita", lambda: self.bebop.flip(2)),
-            800: ("Flip tras", lambda: self.bebop.flip(1)),
+            -9: ("Flip frente", lambda: self.bebop.flip(0)),
+            -9: ("Flip direita", lambda: self.bebop.flip(2)),
+            -8: ("Flip tras", lambda: self.bebop.flip(1)),
         }
 
         self.img.run()
@@ -36,6 +43,7 @@ class ArucoController(Node):
 
         cam = img
         _, id = self.aruco.detect(cam, True)
+        print(id)
 
         if id is not None:
             self.previousID = self.currentID
@@ -63,7 +71,8 @@ class ArucoController(Node):
                 if action_func and not self.already_sent:
                     action_func()
                     self.already_sent = True
-
+        else:
+            self.bebop.offboard_velocity(0.0, 0.0, 0.0, 0.0)
 
 def main(args=None):
     rclpy.init(args=args)
