@@ -28,13 +28,13 @@ class LineDetectionNode(Node):
 
     # Constants for image processing
     IMG_SIZE = (640, 480)
-    DETECTION_ZONE = (250, 150)
+    DETECTION_ZONE = (520, 200)
 
     def __init__(self, line_color: str = None, image_source: str = None):
         super().__init__("line_detection_node")
 
-        self.declare_parameter("line_color", "red")
-        self.declare_parameter("image_source", "webcam")
+        self.declare_parameter("line_color", "show")
+        self.declare_parameter("image_source", "/bebop/camera/image_raw")
 
         if line_color is None:
             # Get detection parameters (line_color and image_source) from the command line
@@ -47,8 +47,8 @@ class LineDetectionNode(Node):
                 self.get_parameter("image_source").get_parameter_value().string_value
             )
 
-        self.line_color = line_color
-        self.image_source = image_source
+        self.line_color: str = line_color
+        self.image_source: str = image_source
 
         self.get_logger().info(
             f"\nDetection Node init: {self.line_color}, {self.image_source}"
@@ -70,15 +70,15 @@ class LineDetectionNode(Node):
 
         self.image_handler = ImageHandler(
             self,
-            image_source,
+            self.image_source,
             self.process_image,
         )
         self.image_handler.run()
 
-    def process_image(self, img: np.ndarray):
+    def process_image(self, img: np.ndarray) -> None:
         # Process the image and perform line detection
         try:
-            cv2.resize(img, self.IMG_SIZE, dst=img)
+            img = cv2.resize(img, self.IMG_SIZE)
             (
                 img,
                 self.center_x,
@@ -87,7 +87,6 @@ class LineDetectionNode(Node):
 
             # Publish line states
             if not isnan(self.center_x) and not isnan(self.angle):
-                # print(type(self.center_x), type(self.angle))
                 self.line_state_msg.center_x = float(self.center_x)
                 self.line_state_msg.angle = float(self.angle)
                 self.state_pub.publish(self.line_state_msg)

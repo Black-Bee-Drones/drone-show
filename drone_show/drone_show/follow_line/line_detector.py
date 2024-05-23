@@ -114,20 +114,25 @@ class RotatedRect(ILineEstimationMethod):
 
         if len(contours) > 0 and cv2.contourArea(contours[0]) > 1500:
             blackbox = cv2.minAreaRect(contours[0])
-            (x_min, y_min), (w_min, h_min), angle = blackbox
+            (x_min, y_min), (w_min, h_min), angle_bb = blackbox
 
-            if angle < -45:
-                angle = 90 + angle
-            if w_min < h_min and angle > 0:
-                angle = (90 - angle) * -1
-            if w_min > h_min and angle < 0:
-                angle = 90 + angle
+            if angle_bb < -45:
+                angle_bb = 90 + angle_bb
+            if w_min < h_min and angle_bb > 0:
+                angle_bb = (90 - angle_bb) * -1
+            if w_min > h_min and angle_bb < 0:
+                angle_bb = 90 + angle_bb
 
-            blackbox = (x_min + offset[0], y_min + offset[1]), (w_min, h_min), angle
+            if angle_bb <= 0:
+                angle = angle_bb + 90.0
+            else:
+                angle = angle_bb - 90.0
+
+            blackbox = (x_min + offset[0], y_min + offset[1]), (w_min, h_min), angle_bb
             box = cv2.boxPoints(blackbox)
             box = np.intp(box)
 
-            theta = np.radians(angle)
+            theta = np.radians(angle_bb)
             x1 = int(x_min - 100 * np.cos(theta)) + offset[0]
             y1 = int(y_min - 100 * np.sin(theta)) + offset[1]
             x2 = int(x_min + 100 * np.cos(theta)) + offset[0]
@@ -278,8 +283,8 @@ class LineDetector:
 
 
 def main():
-    color = "blue"  # Color to detect
-    line_detector = LineDetector(color, RotatedRect)
+    color = "teste"  # Color to detect
+    line_detector = LineDetector(color, HoughLinesP)
 
     cap = cv2.VideoCapture(0)
 
@@ -290,6 +295,8 @@ def main():
             break
 
         result, center_x, angle = line_detector.detect_line(frame, region=(400, 400))
+
+        print(angle)
 
         cv2.imshow("Line Detection", result)
         if cv2.waitKey(1) == ord("q"):

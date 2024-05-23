@@ -125,7 +125,7 @@ class GestureRecognizer(Node):
         if self.msg.data != 0:
             self.acao_pub.publish(self.msg)
 
-        self.get_logger().info(f"{str(self.msg.data)}")
+        # self.get_logger().info(f"{str(self.msg.data)}")
 
     def recognize_gesture(self, fingers_right: list, fingers_left: list) -> int:
         """
@@ -177,6 +177,7 @@ class GestureRecognizer(Node):
 
         # Check if the number of turns is greater than 4
         if self.turns >= 4:
+            self.get_logger().info("bye-bye!")
             self.reset_variables()
             return True
 
@@ -191,6 +192,7 @@ def main(args=None):
         rclpy.spin(node)
     except KeyboardInterrupt:
         node.destroy_node()
+
 
 if __name__ == "__main__":
     main()

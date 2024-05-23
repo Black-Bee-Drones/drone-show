@@ -29,32 +29,56 @@ class GestureController(Node):
             11: (
                 "Anda pra trás",
                 lambda: self.bebop.offboard_velocity(-0.15, 0.0, 0.0, 0.0),
+                lambda: self.bebop.offboard_velocity(-0.15, 0.0, 0.0, 0.0),
             ),
             12: (
                 "Anda pra frente",
                 lambda: self.bebop.offboard_velocity(0.15, 0.0, 0.0, 0.0),
+                lambda: self.bebop.offboard_velocity(0.15, 0.0, 0.0, 0.0),
             ),
             13: (
                 "Yaw Horário",
-                lambda: self.bebop.offboard_velocity(0.0, 0.0, 0.0, 5.0),
+                lambda: self.bebop.offboard_velocity(0.0, 0.0, 0.0, 0.7),
             ),
             14: (
                 "Yaw Anti-Horário",
-                lambda: self.bebop.offboard_velocity(0.0, 0.0, 0.0, -5.0),
+                lambda: self.bebop.offboard_velocity(0.0, 0.0, 0.0, -0.7),
             ),
         }
 
         self.single_actions: dict[int, tuple[str, callable]] = {
             1: ("Land", lambda: self.bebop.land()),
-            # 6: ("Flip Direita", lambda: self.bebop.flip(2)),
-            # 7: ("Flip Esquerda", lambda: self.bebop.flip(3)),
-            # 8: ("Flip Frente", lambda: self.bebop.flip(0)),
-            # 9: ("Flip Tras", lambda: self.bebop.flip(1)),
+            # 6: (
+            #     "Flip Direita",
+            #     self.get_logger().info("flip direita"),
+            #     #lambda: self.bebop.flip(direction=2),
+            # ),
+            # 7: (
+            #     "Flip Esquerda",
+            #     #lambda: self.bebop.flip(direction=3),
+            #     self.get_logger().info("flip esquerda"),
+            # ),
+            # 8: (
+            #     "Flip Frente",
+            #     #lambda: self.bebop.flip(direction=0),
+            #     self.get_logger().info("flip frente"),
+            # ),
+            # 9: ("Flip Tras", self.get_logger().info("flip tras"), #lambda: self.bebop.flip(direction=1)),
             10: ("Tirando Foto", lambda: self.bebop.snapshot()),
-            15: ("Tchau", lambda: self.bebop.bye_bye()),
+            15: ("Tchau", lambda: self.mario_moviment()),
         }
 
         self.start_time = None
+
+    def mario_moviment(self) -> None:
+        """
+        Moviment simulate the Mario.
+
+        Drone up and spin 180 degrees. After that, the drone goes down spinning 180 degrees.
+        """
+
+        self.bebop.offboard_velocity_timer(0.0, 0.0, 0.2, 1.0, 1, 5.0)
+        self.bebop.offboard_velocity_timer(0.0, 0.0, -0.2, 1.0, 1, 5.0)
 
     def _moviment_callback(self, msg: Int16) -> None:
         """
