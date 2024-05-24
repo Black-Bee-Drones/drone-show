@@ -36,8 +36,8 @@ class LineDetectionNode(Node):
         self.declare_parameter("line_color", "show")
         self.declare_parameter("image_source", "/bebop/camera/image_raw")
 
+        # Get detection parameters (line_color and image_source) from the command line
         if line_color is None:
-            # Get detection parameters (line_color and image_source) from the command line
             line_color = (
                 self.get_parameter("line_color").get_parameter_value().string_value
             )
@@ -81,6 +81,7 @@ class LineDetectionNode(Node):
             img = cv2.resize(img, self.IMG_SIZE)
             (
                 img,
+                region,
                 self.center_x,
                 self.angle,
             ) = self.line_detector.detect_line(img, region=self.DETECTION_ZONE)
@@ -106,6 +107,7 @@ class LineDetectionNode(Node):
             )
 
             cv2.imshow("Detection", img)
+            cv2.imshow("Detect Region", region)
 
             if cv2.waitKey(1) & 0xFF == ord("q"):
                 self.get_logger().info("Shutting down line detection node")

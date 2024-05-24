@@ -63,8 +63,6 @@ class HoughLinesP(ILineEstimationMethod):
 
             center_x = x[0]
 
-            # print(x.shape, y.shape, vx.shape, vy.shape)
-
             angle = math.degrees(math.atan2(vy[0], vx[0]))
             if angle <= 0:
                 angle += 90.0
@@ -243,7 +241,6 @@ class LineDetector:
 
         # Extract the subimage of the region of interest
         region = cv2.getRectSubPix(self.color_detector.mask, region_size, region_center)
-        cv2.imshow("Detect Region", region)
 
         img_out = img.copy()
 
@@ -255,7 +252,7 @@ class LineDetector:
             )
 
         except ValueError as e:
-            print(f"Error: {e}")
+            print(f"Error in estimation method: {e}")
 
         if draw:
             # Draw the angle and center on the image
@@ -279,7 +276,7 @@ class LineDetector:
                 2,
             )
 
-        return img_out, center_x, angle
+        return img_out, region, center_x, angle
 
 
 def main():
