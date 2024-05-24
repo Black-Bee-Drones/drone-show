@@ -29,41 +29,39 @@ class GestureController(Node):
             11: (
                 "Anda pra trás",
                 lambda: self.bebop.offboard_velocity(-0.15, 0.0, 0.0, 0.0),
-                lambda: self.bebop.offboard_velocity(-0.15, 0.0, 0.0, 0.0),
             ),
             12: (
                 "Anda pra frente",
                 lambda: self.bebop.offboard_velocity(0.15, 0.0, 0.0, 0.0),
-                lambda: self.bebop.offboard_velocity(0.15, 0.0, 0.0, 0.0),
             ),
             13: (
                 "Yaw Horário",
-                lambda: self.bebop.offboard_velocity(0.0, 0.0, 0.0, 0.7),
+                lambda: self.bebop.offboard_velocity(0.0, 0.0, 0.0, 1.0),
             ),
             14: (
                 "Yaw Anti-Horário",
-                lambda: self.bebop.offboard_velocity(0.0, 0.0, 0.0, -0.7),
+                lambda: self.bebop.offboard_velocity(0.0, 0.0, 0.0, -1.0),
             ),
         }
 
         self.single_actions: dict[int, tuple[str, callable]] = {
             1: ("Land", lambda: self.bebop.land()),
-            # 6: (
-            #     "Flip Direita",
-            #     self.get_logger().info("flip direita"),
-            #     #lambda: self.bebop.flip(direction=2),
-            # ),
-            # 7: (
-            #     "Flip Esquerda",
-            #     #lambda: self.bebop.flip(direction=3),
-            #     self.get_logger().info("flip esquerda"),
-            # ),
-            # 8: (
-            #     "Flip Frente",
-            #     #lambda: self.bebop.flip(direction=0),
-            #     self.get_logger().info("flip frente"),
-            # ),
-            # 9: ("Flip Tras", self.get_logger().info("flip tras"), #lambda: self.bebop.flip(direction=1)),
+            6: (
+                "Flip Direita",
+                lambda: self.bebop.flip(direction=2),
+            ),
+            7: (
+                "Flip Esquerda",
+                lambda: self.bebop.flip(direction=3),
+            ),
+            8: (
+                "Flip Frente",
+                lambda: self.bebop.flip(direction=0),
+            ),
+            9: (
+                "Flip Tras",
+                lambda: self.bebop.flip(direction=1),
+            ),
             10: ("Tirando Foto", lambda: self.bebop.snapshot()),
             15: ("Tchau", lambda: self.mario_moviment()),
         }
@@ -97,20 +95,23 @@ class GestureController(Node):
             self.already_sent = False
 
         if self.start_time is not None and time() - self.start_time >= 0.5:
-            action_name, action_func = self.continuous_actions.get(
-                self.current_action, ("Unknown", None)
-            )
-            if action_func:
-                self.get_logger().info(f"Action: {action_name}")
-                action_func()
+            try:
+                action_name, action_func = self.continuous_actions.get(
+                    self.current_action, ("Unknown", None)
+                )
+                if action_func:
+                    self.get_logger().info(f"Action: {action_name}")
+                    action_func()
 
-            action_name, action_func = self.single_actions.get(
-                self.current_action, ("Unknown", None)
-            )
-            if action_func and not self.already_sent:
-                self.get_logger().info(f"Action: {action_name}")
-                action_func()
-                self.already_sent = True
+                action_name, action_func = self.single_actions.get(
+                    self.current_action, ("Unknown", None)
+                )
+                if action_func and not self.already_sent:
+                    self.get_logger().info(f"Action: {action_name}")
+                    action_func()
+                    self.already_sent = True
+            except Exception as e:
+                self.get_logger(f"{e}")
 
 
 def main(args=None):
