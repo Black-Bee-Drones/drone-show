@@ -65,7 +65,7 @@ class FollowLine(Node):
         self.pub_set_point_center_x.publish(self.setpoint_center_x)
         self.pub_set_point_angle.publish(self.setpoint_angle)
 
-        # Drone
+        # Drone initialization
         self.declare_parameter("drone_type", drone_type)
         self._init_drone(
             self.get_parameter("drone_type").get_parameter_value().string_value
@@ -93,6 +93,14 @@ class FollowLine(Node):
             self.drone = MavDrone(node=self, driver=False)
 
     def state_callback(self, msg: LineInfo) -> None:
+        """
+        Callback function for the line state message.
+
+        Publish the actual state and setpoint values and apply the control.
+
+        :param msg: LineInfo message
+            The message containing the line state information (center_x, angle)
+        """
         self.actual_state_center_x.data = msg.center_x
         self.actual_state_angle.data = msg.angle
 
@@ -113,6 +121,9 @@ class FollowLine(Node):
         self.control_activate["angle"] = True
 
     def apply_control(self) -> None:
+        """
+        Apply the control values (linear y, angular z) to the drone.
+        """
 
         linear_y = angular_z = 0.0
 
@@ -120,7 +131,7 @@ class FollowLine(Node):
             linear_y = self.control_value_center_x
             self.control_activate["center_x"] = False
 
-        if self.should_apply_control("angle", self.control_value_angle, 0.1, 10.0):
+        if self.should_apply_control("angle", self.control_value_angle, 0.1, 8.0):
             angular_z = self.control_value_angle
             self.control_activate["angle"] = False
 
@@ -140,6 +151,9 @@ class FollowLine(Node):
         low_threshold: float = 0.1,
         high_threshold: float = 1.0,
     ) -> Bool:
+        """
+        Check if the abs control value is new and within the specified thresholds.
+        """
         return (
             self.control_activate[controller]
             and abs(effort) >= low_threshold
@@ -156,7 +170,6 @@ def main(args=None) -> None:
         rclpy.spin(follow_line)
     except KeyboardInterrupt:
         follow_line.destroy_node()
-        rclpy.shutdown()
         sys.exit(0)
 
 
