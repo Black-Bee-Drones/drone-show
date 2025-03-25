@@ -4,7 +4,6 @@ from std_msgs.msg import Int16
 from time import time
 from mirela_sdk.control.bebop.bebop_api import Bebop
 
-
 class GestureController(Node):
 
     def __init__(self) -> None:
